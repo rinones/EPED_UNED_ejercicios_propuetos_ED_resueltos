@@ -1,0 +1,77 @@
+package explicaciones;
+
+Explicación del método getFanOut() en BTree
+
+El método getFanOut() devuelve el número máximo de hijos que tiene cualquier nodo del árbol.
+En un árbol binario, el fan-out máximo posible es 2.
+
+Análisis línea por línea del método:
+
+LÍNEA 1: if ( getNumChildren() == 2 ) { return 2; }
+- Si el nodo actual tiene exactamente 2 hijos, retorna 2 inmediatamente
+- Este es el fan-out máximo posible en un árbol binario
+
+LÍNEA 2: if ( this.leftChild != null ) { return Math.max(1,this.leftChild.getFanOut()); }
+- Si solo tiene hijo izquierdo (no tiene 2 hijos), calcula recursivamente el fan-out del hijo izquierdo
+- Usa Math.max(1, ...) porque al menos hay 1 hijo (el izquierdo)
+
+LÍNEA 3: if ( this.rightChild != null ) { return Math.max(1,this.rightChild.getFanOut()); }
+- Si solo tiene hijo derecho (no tiene izquierdo), calcula recursivamente el fan-out del hijo derecho
+- Usa Math.max(1, ...) porque al menos hay 1 hijo (el derecho)
+
+LÍNEA 4: return 0;
+- Si no tiene ningún hijo (es una hoja o está vacío), retorna 0
+
+EJEMPLOS DE EJECUCIÓN:
+
+Ejemplo 1: Árbol vacío
+- getNumChildren() = 0 → No cumple primera condición
+- leftChild = null → No cumple segunda condición  
+- rightChild = null → No cumple tercera condición
+- Resultado: 0
+
+Ejemplo 2: Nodo con 2 hijos
+    A
+   / \
+  B   C
+- En nodo A: getNumChildren() = 2 → Retorna 2 inmediatamente
+
+Ejemplo 3: Nodo con 1 hijo izquierdo
+  A
+ /
+B
+- En nodo A: getNumChildren() = 1 → No cumple primera condición
+- leftChild ≠ null → Ejecuta Math.max(1, B.getFanOut())
+- B es hoja → B.getFanOut() = 0
+- Resultado: Math.max(1, 0) = 1
+
+Ejemplo 4: Árbol más complejo
+      A
+    /   \
+   B     C
+  / \   /
+ D   E F
+- En A: getNumChildren() = 2 → Retorna 2
+- (No necesita evaluar los demás nodos porque ya encontró fan-out = 2)
+
+La clave es que busca el número máximo de hijos que tiene cualquier nodo del árbol,
+y en un árbol binario, ese máximo es 2.
+
+public class fanOut_BTree_explicacion {
+    
+    public int getFanOut() {
+        if ( getNumChildren() == 2 ) { return 2; }
+        if ( this.leftChild != null ) { return Math.max(1,this.leftChild.getFanOut()); }
+        if ( this.rightChild != null ) { return Math.max(1,this.rightChild.getFanOut()); }
+        return 0;
+    }
+    
+    private int getNumChildren() {
+        int nC = 0;
+        if ( this.leftChild != null ) { nC++; }
+        if ( this.rightChild != null ) { nC++; }
+        return nC;
+    }
+    
+    private fanOut_BTree_explicacion leftChild;
+    private fanOut_BTree_explicacion

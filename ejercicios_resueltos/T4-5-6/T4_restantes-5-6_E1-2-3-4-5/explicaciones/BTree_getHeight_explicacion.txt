@@ -1,0 +1,184 @@
+/**
+ * Explicación del método getHeight() en BTree
+ * 
+ * El método getHeight() devuelve la altura del árbol, que es la distancia máxima 
+ * desde la raíz hasta cualquiera de sus hojas.
+ * 
+ * Análisis línea por línea del método:
+ * 
+ * LÍNEA 1: if ( isEmpty() ) { return 0; }
+ * - Si el árbol está vacío (no tiene raíz), la altura es 0
+ * - Caso base de la recursión
+ * 
+ * LÍNEA 2: int hLC = 0;
+ * - Inicializa la variable para almacenar la altura del subárbol izquierdo
+ * - Se inicializa en 0 (altura de un subárbol inexistente)
+ * 
+ * LÍNEA 3: if ( this.leftChild != null ) { hLC = this.leftChild.getHeight(); }
+ * - Si existe hijo izquierdo, calcula recursivamente su altura
+ * - Llamada recursiva que devuelve la altura del subárbol izquierdo
+ * 
+ * LÍNEA 4: int hRC = 0;
+ * - Inicializa la variable para almacenar la altura del subárbol derecho
+ * - Se inicializa en 0 (altura de un subárbol inexistente)
+ * 
+ * LÍNEA 5: if ( this.rightChild != null ) { hRC = this.rightChild.getHeight(); }
+ * - Si existe hijo derecho, calcula recursivamente su altura
+ * - Llamada recursiva que devuelve la altura del subárbol derecho
+ * 
+ * LÍNEA 6: return 1 + ((hLC > hRC)?hLC:hRC);
+ * - Retorna 1 (contando el nodo actual) + la altura máxima entre ambos subárboles
+ * - El operador ternario (hLC > hRC)?hLC:hRC selecciona el mayor entre hLC y hRC
+ * - La altura total es: nodo actual + altura del subárbol más profundo
+ * 
+ * EJEMPLOS DE EJECUCIÓN CON ORDEN CORRECTO:
+ * 
+ * Ejemplo 1: Árbol vacío
+ * - LÍNEA 1: isEmpty() = true → Retorna 0 inmediatamente
+ * - No se ejecutan más líneas
+ * 
+ * Ejemplo 2: Solo raíz (hoja)
+ * Árbol: A
+ * - LÍNEA 1: isEmpty() = false → Continúa
+ * - LÍNEA 2: hLC = 0 (inicialización)
+ * - LÍNEA 3: leftChild = null → No se ejecuta el bloque, hLC sigue siendo 0
+ * - LÍNEA 4: hRC = 0 (inicialización)
+ * - LÍNEA 5: rightChild = null → No se ejecuta el bloque, hRC sigue siendo 0
+ * - LÍNEA 6: return 1 + max(0,0) = 1
+ * 
+ * Ejemplo 3: Árbol con dos hojas
+ *     A
+ *    / \
+ *   B   C
+ * Ejecución en A:
+ * - LÍNEA 1: isEmpty() = false → Continúa
+ * - LÍNEA 2: hLC = 0
+ * - LÍNEA 3: leftChild existe → Llamada recursiva B.getHeight()
+ *   └─ En B: isEmpty()=false, hLC=0, leftChild=null, hRC=0, rightChild=null → Retorna 1
+ * - LÍNEA 3: hLC = 1
+ * - LÍNEA 4: hRC = 0
+ * - LÍNEA 5: rightChild existe → Llamada recursiva C.getHeight()
+ *   └─ En C: isEmpty()=false, hLC=0, leftChild=null, hRC=0, rightChild=null → Retorna 1
+ * - LÍNEA 5: hRC = 1
+ * - LÍNEA 6: return 1 + max(1,1) = 2
+ * 
+ * Ejemplo 4: Árbol desbalanceado (ejecución paso a paso)
+ *   A
+ *  /
+ * B
+ * /
+ *C
+ * 
+ * SECUENCIA DE EJECUCIÓN:
+ * 1. Llamada A.getHeight():
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild existe → Llamada B.getHeight()
+ * 
+ * 2. Llamada B.getHeight():
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild existe → Llamada C.getHeight()
+ * 
+ * 3. Llamada C.getHeight():
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild=null, hLC sigue siendo 0
+ *    - LÍNEAS 4-5: hRC=0, rightChild=null, hRC sigue siendo 0
+ *    - LÍNEA 6: return 1 + max(0,0) = 1
+ * 
+ * 4. Vuelta a B.getHeight():
+ *    - LÍNEA 3: hLC = 1 (resultado de C)
+ *    - LÍNEAS 4-5: hRC=0, rightChild=null, hRC sigue siendo 0
+ *    - LÍNEA 6: return 1 + max(1,0) = 2
+ * 
+ * 5. Vuelta a A.getHeight():
+ *    - LÍNEA 3: hLC = 2 (resultado de B)
+ *    - LÍNEAS 4-5: hRC=0, rightChild=null, hRC sigue siendo 0
+ *    - LÍNEA 6: return 1 + max(2,0) = 3
+ * 
+ * Ejemplo 5: Árbol complejo (ejecución completa paso a paso)
+ *       A
+ *     /   \
+ *    B     C
+ *   / \   /
+ *  D   E F
+ * 
+ * SECUENCIA COMPLETA DE EJECUCIÓN:
+ * 
+ * 1. Llamada A.getHeight():
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild existe → Llamada B.getHeight()
+ * 
+ * 2. Llamada B.getHeight():
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild existe → Llamada D.getHeight()
+ * 
+ * 3. Llamada D.getHeight() (hoja):
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild=null, hLC sigue siendo 0
+ *    - LÍNEAS 4-5: hRC=0, rightChild=null, hRC sigue siendo 0
+ *    - LÍNEA 6: return 1 + max(0,0) = 1
+ * 
+ * 4. Vuelta a B.getHeight():
+ *    - LÍNEA 3: hLC = 1 (resultado de D)
+ *    - LÍNEA 4: hRC = 0
+ *    - LÍNEA 5: rightChild existe → Llamada E.getHeight()
+ * 
+ * 5. Llamada E.getHeight() (hoja):
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild=null, hLC sigue siendo 0
+ *    - LÍNEAS 4-5: hRC=0, rightChild=null, hRC sigue siendo 0
+ *    - LÍNEA 6: return 1 + max(0,0) = 1
+ * 
+ * 6. Vuelta a B.getHeight():
+ *    - LÍNEA 5: hRC = 1 (resultado de E)
+ *    - LÍNEA 6: return 1 + max(1,1) = 2
+ * 
+ * 7. Vuelta a A.getHeight():
+ *    - LÍNEA 3: hLC = 2 (resultado de B)
+ *    - LÍNEA 4: hRC = 0
+ *    - LÍNEA 5: rightChild existe → Llamada C.getHeight()
+ * 
+ * 8. Llamada C.getHeight():
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild existe → Llamada F.getHeight()
+ * 
+ * 9. Llamada F.getHeight() (hoja):
+ *    - LÍNEAS 1-2: isEmpty()=false, hLC=0
+ *    - LÍNEA 3: leftChild=null, hLC sigue siendo 0
+ *    - LÍNEAS 4-5: hRC=0, rightChild=null, hRC sigue siendo 0
+ *    - LÍNEA 6: return 1 + max(0,0) = 1
+ * 
+ * 10. Vuelta a C.getHeight():
+ *     - LÍNEA 3: hLC = 1 (resultado de F)
+ *     - LÍNEAS 4-5: hRC=0, rightChild=null, hRC sigue siendo 0
+ *     - LÍNEA 6: return 1 + max(1,0) = 2
+ * 
+ * 11. Vuelta a A.getHeight():
+ *     - LÍNEA 5: hRC = 2 (resultado de C)
+ *     - LÍNEA 6: return 1 + max(2,2) = 3
+ * 
+ * RESULTADO FINAL: La altura del árbol es 3
+ * 
+ * ORDEN DE RESOLUCIÓN: D→E→B→F→C→A (post-orden)
+ * 
+ * La altura representa el número de niveles del árbol, contando la raíz como nivel 1.
+ * La recursión calcula la altura de cada subárbol y toma el máximo.
+ */
+public class getHeight_BTree_explicacion {
+    
+    public int getHeight() {
+        if ( isEmpty() ) { return 0; }
+        int hLC = 0;
+        if ( this.leftChild != null ) { hLC = this.leftChild.getHeight(); }
+        int hRC = 0;
+        if ( this.rightChild != null ) { hRC = this.rightChild.getHeight(); }
+        return 1 + ((hLC > hRC)?hLC:hRC);
+    }
+    
+    private boolean isEmpty() {
+        return this.root == null;
+    }
+    
+    private getHeight_BTree_explicacion leftChild;
+    private getHeight_BTree_explicacion rightChild;
+    private Object root;
+}

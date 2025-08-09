@@ -1,0 +1,40 @@
+El método funciona con una cola auxQ que contiene subárboles completos. Cada iteración del bucle principal:
+
+Toma el primer subárbol de la cola (getFirst())
+Procesa su raíz (la añade a la cola resultado q)
+Añade todos los hijos de ese subárbol a la cola auxQ
+Elimina el subárbol procesado de la cola (dequeue())
+Ejemplo correcto con el árbol:
+     A
+   / | \
+  B  C  D
+ /|  |  |\
+E F  G  H I
+Ejecución paso a paso:
+
+Inicial: auxQ = [árbol_A]
+
+Procesa A → resultado: [A]
+Añade hijos de A: auxQ = [árbol_B, árbol_C, árbol_D]
+Remueve árbol_A
+Iteración 2: auxQ = [árbol_B, árbol_C, árbol_D]
+
+Procesa B → resultado: [A, B]
+Añade hijos de B: auxQ = [árbol_C, árbol_D, árbol_E, árbol_F]
+Remueve árbol_B
+Iteración 3: auxQ = [árbol_C, árbol_D, árbol_E, árbol_F]
+
+Procesa C → resultado: [A, B, C]
+Añade hijos de C: auxQ = [árbol_D, árbol_E, árbol_F, árbol_G]
+Remueve árbol_C
+Iteración 4: auxQ = [árbol_D, árbol_E, árbol_F, árbol_G]
+
+Procesa D → resultado: [A, B, C, D]
+Añade hijos de D: auxQ = [árbol_E, árbol_F, árbol_G, árbol_H, árbol_I]
+Remueve árbol_D
+Siguientes iteraciones: Procesa E, F, G, H, I (hojas sin hijos)
+
+Resultado final: A, B, C, D, E, F, G, H, I (recorrido en anchura nivel por nivel)
+
+La clave es que la cola mantiene el orden FIFO (First In, First Out), garantizando que los nodos se procesen nivel 
+por nivel de izquierda a derecha, que es exactamente lo que define un recorrido en anchura.

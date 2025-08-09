@@ -1,0 +1,171 @@
+/*
+ * USUARIO: sigo sin entender porque getNext() avanza. En el primer getNext() entrega A. Ademas llama a getNext() para que le entregue el valor del siguiente currentNode, 
+ pero getNext() va a volver a entregar A, porque no hay ninguna operacion que avance explicitamente al siguiente. En un array yo lo haria con un incremental. No entiendo la logica que hay aqui
+ * 
+ * GITHUB COPILOT: ¡Ah! Ahora veo exactamente tu confusión. Estás mezclando **DOS métodos diferentes** que se llaman igual pero hacen cosas distintas.
+ * 
+ * Hay **DOS métodos `getNext()` diferentes**:
+ * 
+ * **1. `getNext()` del ITERADOR (línea 47-51):**
+ */
+public E getNext(){E elem=this.currentNode.getValue();this.currentNode=this.currentNode.getNext();return elem;}
+/*
+ * **2. `getNext()` del NODO (línea 28-30):**
+ */
+public NodeSequence getNext(){return this.next;}
+/*
+ * **En la línea crucial del iterador:**
+ */
+this.currentNode=this.currentNode.getNext();
+/*
+ * Esto NO es recursivo. Vamos paso a paso:
+ * 
+ * 1. `this.currentNode` - es la variable del iterador que apunta al nodo actual
+ * 2. `this.currentNode.getNext()` - llama al método `getNext()` **DEL NODO** (no del iterador)
+ * 3. El método del nodo devuelve `this.next` (la referencia al siguiente nodo)
+ * 4. `this.currentNode = ...` - **ASIGNA** esa referencia a la variable del iterador
+ * 
+ * **Es equivalente a tu incremento en un array:**
+ */
+// En un array:
+int index=0;elemento=array[index];index++;
+
+// En la lista enlazada:
+NodeSequence currentNode=firstNode;elemento=currentNode.getValue();currentNode=currentNode.getNext();
+/*
+ * **Ejemplo concreto:**
+ * 
+ * Lista: [A|→] → [B|→] → [C|→] → null
+ * 
+ * Estado inicial:
+ * currentNode → [A|→]
+ * 
+ * Primera llamada a getNext() del ITERADOR:
+ * 1. elem = currentNode.getValue()     // elem = "A"
+ * 2. currentNode = currentNode.getNext() // currentNode ahora apunta a [B|→]
+ * 3. return elem                       // devuelve "A"
+ * 
+ * Segunda llamada a getNext() del ITERADOR:
+ * 1. elem = currentNode.getValue()     // elem = "B" (porque currentNode ya apunta a B)
+ * 2. currentNode = currentNode.getNext() // currentNode ahora apunta a [C|→]
+ * 3. return elem                       // devuelve "B"
+ * 
+ * **El "incremento" es la asignación `currentNode = currentNode.getNext()`** - cambia la variable para que apunte al siguiente nodo, igual que `index++` en un array.
+ */
+
+package es.uned.lsi.eped.DataStructures;
+
+public abstract class Sequence<E> extends Collection<E> implements SequenceIF<E> {
+    protected class NodeSequence {
+
+        private E value;
+        private NodeSequence next;
+        
+        NodeSequence(){
+            this.value = null;
+            this.next = null;
+        }
+        
+        NodeSequence(E e){
+            this.value = e;
+            this.next = null;
+        }
+                
+        public E getValue(){
+            return this.value;
+        }
+        
+        public void setValue(E e){
+            this.value = e;
+        }
+        
+        public NodeSequence getNext(){
+            return this.next;
+        }
+        
+        public void setNext(NodeSequence n){
+            this.next = n;
+        }
+        
+    }
+
+    private class SequenceIterator implements IteratorIF<E> {
+        
+        private NodeSequence currentNode;
+        
+        SequenceIterator(){
+            this.currentNode = firstNode;
+        }
+        
+        public E getNext() {
+            E elem = this.currentNode.getValue(); 
+            this.currentNode = this.currentNode.getNext();
+            return elem;
+        }
+        
+        public boolean hasNext() {
+            return this.currentNode != null;
+        }
+
+        public void reset() {
+            this.currentNode = firstNode;
+        }
+
+    }
+    
+    protected NodeSequence firstNode;
+    
+    private NodeSequence getFirstNode() {
+        return this.firstNode;
+    }
+
+    public Sequence () {
+        super();
+        this.firstNode = null;
+    }
+    
+    public Sequence (Sequence<E> s) {
+        this();
+        if ( ! s.isEmpty() ) {
+            this.size = s.size();
+            NodeSequence nodeS = s.getFirstNode();
+            NodeSequence pNode = new NodeSequence(nodeS.getValue());
+            this.firstNode = pNode;
+            while ( nodeS.getNext() != null ) {
+                nodeS = nodeS.getNext();
+                NodeSequence newNode = new NodeSequence(nodeS.getValue());
+                pNode.setNext(newNode);
+                pNode = newNode;
+            }
+        }
+    }
+
+    public void clear () {
+        super.clear();
+        this.firstNode = null;
+    }
+
+    public boolean contains(E e) {
+        NodeSequence node = this.firstNode;
+        while(node!=null){
+            E next = node.getValue();
+            if(next.equals(e)){
+                return true;
+            }
+            node = node.getNext();
+        }
+        return false;
+    }
+
+    public IteratorIF<E> iterator() {
+        return new SequenceIterator();
+    }
+    
+    protected NodeSequence getNode(int i){
+        NodeSequence node = this.firstNode;
+        for ( int aux = 1 ; aux < i ; aux++ ) {
+            node = node.getNext();
+        }
+        return node;
+    }
+}

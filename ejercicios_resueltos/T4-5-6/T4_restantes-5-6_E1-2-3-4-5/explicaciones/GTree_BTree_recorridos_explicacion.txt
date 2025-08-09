@@ -1,0 +1,32 @@
+porque el tipo de parametro es un interface?
+GTree.java
+:116
+
+Observando el código seleccionado en la línea 116, veo que estás preguntando sobre por qué se usa GTreeIF<E> 
+(una interfaz) como tipo de parámetro en lugar de la clase concreta GTree<E>.
+
+Hay varias razones importantes por las que se usa una interfaz como tipo de parámetro:
+
+1. Principio de Inversión de Dependencias
+Al usar GTreeIF<E> en lugar de GTree<E>, el método no depende de una implementación específica, sino de una 
+abstracción. Esto significa que el método puede trabajar con cualquier clase que implemente GTreeIF<E>, no solo 
+con GTree<E>.
+
+2. Flexibilidad y Extensibilidad
+Si en el futuro se crean otras implementaciones de GTreeIF<E> (por ejemplo, OptimizedGTree<E> o CompactGTree<E>), 
+estos métodos seguirán funcionando sin modificaciones.
+
+3. Polimorfismo
+Permite que el método trabaje polimórficamente con diferentes implementaciones de árboles generales, siempre que 
+cumplan el contrato definido por GTreeIF<E>.
+
+4. Mejor Diseño OOP
+Es una buena práctica de programación orientada a objetos: "programa contra interfaces, no contra implementaciones".
+Esto hace el código más mantenible y menos acoplado.
+
+5. Reutilización
+Los métodos como preorder, postorder y breadthLR pueden ser reutilizados por otras clases que implementen GTreeIF<E>
+, no solo por GTree<E>.
+
+En este caso específico, aunque GTree<E> sea la única implementación actual de GTreeIF<E>, usar la interfaz como 
+tipo de parámetro es una decisión de diseño que hace el código más robusto y preparado para futuras extensiones.

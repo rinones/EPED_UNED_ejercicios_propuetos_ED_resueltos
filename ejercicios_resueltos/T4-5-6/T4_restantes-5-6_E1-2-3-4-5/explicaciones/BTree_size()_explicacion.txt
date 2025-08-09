@@ -1,0 +1,216 @@
+package explicaciones;
+/**
+ * Análisis del método size() en GTree vs Collection
+ * 
+ * PREGUNTA 1: ¿Por qué no se puede utilizar el size() de Collection?
+ * 
+ * EXPLICACIÓN:
+ * El problema con el size() de Collection es que tiene una implementación diferente
+ * para estructuras de datos lineales vs jerárquicas:
+ * 
+ * 1. IMPLEMENTACIÓN DIFERENTE: La clase Collection mantiene un atributo 
+ *    'protected int size' que se actualiza mediante operaciones de inserción/eliminación 
+ *    típicas de colecciones lineales.
+ * 
+ * 2. ESTRUCTURA DE ÁRBOL: En un GTree, los elementos están organizados jerárquicamente. 
+ *    Cada nodo puede tener múltiples hijos, y estos hijos son a su vez árboles completos.
+ * 
+ * 3. EL ATRIBUTO size DE Collection NO REFLEJA LA ESTRUCTURA REAL:
+ *    - En Collection, size cuenta elementos que se añaden/quitan directamente
+ *    - En un árbol, necesitas contar TODOS los nodos incluyendo la raíz y todos 
+ *      los nodos en todos los subárboles
+ * 
+ * 4. CONTEO RECURSIVO NECESARIO: Para obtener el tamaño real de un árbol, debes:
+ *    - Contar la raíz (1)
+ *    - Sumar recursivamente el tamaño de cada subárbol hijo
+ * 
+ * Esta implementación SOBRESCRIBE (override) el método size() de Collection porque 
+ * la lógica de conteo para árboles es fundamentalmente diferente a la de colecciones 
+ * lineales. El método debe recorrer toda la estructura jerárquica para contar todos 
+ * los nodos, no solo mantener un contador simple.
+ */
+public class AnalisisMetodoSize {
+    
+    /**
+     * Implementación del size() en Collection (clase padre)
+     */
+    public class CollectionSizeExample {
+        protected int size;
+        
+        public CollectionSizeExample() {
+            size = 0;
+        }
+        
+        public int size() {
+            return size;
+        }
+        
+        public boolean isEmpty() {
+            return size == 0;
+        }
+        
+        public void clear() {
+            size = 0;
+        }
+    }
+    
+    /**
+     * Implementación correcta del size() en GTree (sobrescribiendo Collection)
+     * Ejemplo conceptual de la lógica usada en el método size() del GTree real
+     */
+    public class GTreeSizeExample {
+        
+        // Método conceptual que muestra la lógica del size() en GTree
+        public int sizeConceptual() {
+            // if (isEmpty()) { return 0; }
+            int s = 1;
+            // IteratorIF<GTreeIF<E>> childIt = this.children.iterator();
+            // while (childIt.hasNext()) {
+            //     s = s + childIt.getNext().size();
+            // }
+            return s;
+        }
+    }
+    
+    /**
+     * PREGUNTA 2: ¿Cuál es la lógica si no sobreescribiese el método size() de Collection, 
+     * y aplicáramos directamente el método size de Collection?
+     * 
+     * EXPLICACIÓN:
+     * Si NO se sobreescribiera el método size(), el comportamiento sería INCORRECTO.
+     * 
+     * El método size() de Collection simplemente retorna el valor del atributo size:
+     * return size; // Retorna el atributo protegido 'size'
+     * 
+     * ¿QUÉ VALOR TENDRÍA size EN UN GTree?
+     * 
+     * Veamos las operaciones que modificarían este atributo en un GTree:
+     * 
+     * 1. CONSTRUCTOR:
+     *    - super() llama a Collection(), que pone size = 0
+     *    - size empieza en 0
+     * 
+     * 2. setRoot(E e):
+     *    - NO modifica size
+     *    - size sigue siendo 0
+     * 
+     * 3. addChild(int pos, GTreeIF<E> e):
+     *    - NO modifica size de GTree
+     *    - Solo añade a la lista children
+     *    - size sigue siendo 0
+     * 
+     * 4. removeChild(int pos):
+     *    - NO modifica size de GTree
+     *    - size sigue siendo 0
+     * 
+     * RESULTADO: ¡size() siempre retornaría 0!
+     * 
+     * ¿Por qué 0?
+     * - El atributo size de Collection nunca se actualiza en las operaciones de GTree
+     * - Las operaciones del árbol (setRoot, addChild) no llaman a métodos que incrementen size
+     * - Collection espera que las subclases llamen explícitamente a métodos que modifiquen size
+     */
+    public void ejemploComportamientoIncorrecto() {
+        // Si no se sobreescribiera size(), este sería el comportamiento:
+        
+        // Ejemplo conceptual:
+        // GTree<String> arbol = new GTree<>();
+        // arbol.setRoot("A");
+        // arbol.addChild(0, new GTree<String>());
+        // arbol.getChild(0).setRoot("B");
+        
+        // ¡Imprimiría 0! (INCORRECTO)
+        // System.out.println(arbol.size()); 
+        
+        System.out.println("El ejemplo anterior imprimiría 0 en lugar del valor correcto");
+    }
+    
+    /**
+     * COMPARACIÓN DE RESULTADOS:
+     * 
+     * | Escenario           | size() de Collection | size() actual (sobreescrito) |
+     * |---------------------|----------------------|-------------------------------|
+     * | Árbol vacío         | 0 ✓                  | 0 ✓                          |
+     * | Solo raíz           | 0 ❌                 | 1 ✓                          |
+     * | Raíz + 2 hijos      | 0 ❌                 | 3 ✓                          |
+     * | Árbol complejo      | 0 ❌                 | Cuenta real ✓                |
+     * 
+     * CONCLUSIÓN:
+     * Sin sobreescribir size(), el método SIEMPRE retornaría 0 porque:
+     * 1. Las operaciones de árbol no están diseñadas para mantener el contador size de Collection
+     * 2. Collection asume que las subclases gestionarán explícitamente este contador
+     * 3. La lógica de árbol requiere conteo recursivo, no un simple contador incremental
+     * 
+     * Por eso es IMPRESCINDIBLE sobreescribir el método para que tenga la lógica 
+     * correcta de conteo jerárquico.
+     */
+    
+    /**
+     * Demostración del comportamiento con diferentes implementaciones
+     */
+    public void demostracionComparativa() {
+        
+        // Simulación del comportamiento con size() de Collection
+        class GTreeConSizeIncorrecto {
+            private final int size = 0; // Atributo de Collection
+            private Object root = null;
+            
+            public int size() {
+                return size; // Implementación de Collection
+            }
+            
+            public void setRoot(Object e) {
+                this.root = e;
+                // NO actualiza size
+            }
+            
+            public void addChild(Object child) {
+                // NO actualiza size
+            }
+            
+            public Object getRoot() {
+                return root;
+            }
+        }
+        
+        // Implementación correcta (como en GTree)
+        class GTreeConSizeCorrecto {
+            private Object root = null;
+            private final java.util.List<GTreeConSizeCorrecto> children = new java.util.ArrayList<>();
+            
+            public int size() {
+                if (isEmpty()) { return 0; }
+                int s = 1;
+                for (GTreeConSizeCorrecto child : children) {
+                    s = s + child.size();
+                }
+                return s;
+            }
+            
+            public boolean isEmpty() {
+                return root == null;
+            }
+            
+            public void setRoot(Object e) {
+                this.root = e;
+            }
+            
+            public void addChild(GTreeConSizeCorrecto child) {
+                children.add(child);
+            }
+        }
+        
+        // Ejemplo de uso
+        GTreeConSizeIncorrecto arbolIncorrecto = new GTreeConSizeIncorrecto();
+        arbolIncorrecto.setRoot("A");
+        arbolIncorrecto.addChild("B");
+        System.out.println("Size incorrecto: " + arbolIncorrecto.size()); // Imprime 0
+        
+        GTreeConSizeCorrecto arbolCorrecto = new GTreeConSizeCorrecto();
+        arbolCorrecto.setRoot("A");
+        GTreeConSizeCorrecto hijo = new GTreeConSizeCorrecto();
+        hijo.setRoot("B");
+        arbolCorrecto.addChild(hijo);
+        System.out.println("Size correcto: " + arbolCorrecto.size()); // Imprime 2
+    }
+}
