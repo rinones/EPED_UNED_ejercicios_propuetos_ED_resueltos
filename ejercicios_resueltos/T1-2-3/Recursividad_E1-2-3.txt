@@ -1,0 +1,81 @@
+1. Función factorial
+Definición recursiva:
+
+factorial(0) = 1
+factorial(n) = n * factorial(n-1), para n > 0
+Partes de la definición:
+
+Caso no recursivo (base):
+Cuando n = 0, factorial(0) = 1.
+El programa simplemente devuelve 1 sin hacer ninguna llamada recursiva.
+
+Caso recursivo:
+Cuando n > 0, se llama a factorial(n-1), es decir, el argumento de la llamada recursiva es n-1.
+El resultado final se obtiene multiplicando n por el resultado de factorial(n-1).
+
+
+
+2. Serie de Fibonacci
+Definición recursiva:
+
+fibonacci(0) = 1
+fibonacci(1) = 1
+fibonacci(n) = fibonacci(n-1) + fibonacci(n-2), para n > 1
+Partes de la definición:
+
+Casos no recursivos (base):
+Cuando n = 0 o n = 1, devuelve 1.
+
+Caso recursivo:
+Cuando n > 1, se hacen dos llamadas recursivas: fibonacci(n-1) y fibonacci(n-2).
+El resultado final es la suma de ambos.
+
+Ineficiencia:
+
+Una implementación directa recalcula muchas veces los mismos valores (por ejemplo, fibonacci(2) se calcula varias veces).
+Esto lleva a una complejidad exponencial O(2^n).
+Alternativas eficientes:
+
+Memoización: Guardar los resultados parciales para no volver a calcularlos.
+Implementación iterativa: Usar un bucle para calcular la serie.
+Programación dinámica: Guardar los resultados en un arreglo y construirlo desde los casos base.
+
+
+
+3. Exponencial de un número
+Definición recursiva propuesta:
+
+a^b = 1, si b = 0
+a^b = a^(b/2) * a^(b/2), si b > 0
+Partes de la definición:
+
+Caso base:
+Si b = 0, devuelve 1.
+
+Caso recursivo:
+Si b > 0, se llama recursivamente a a^(b/2), y multiplica ese resultado por sí mismo.
+
+¿Es correcta?
+
+Solo es correcta para b par. Para b impar, debería ser
+a^b = a * a^(b//2) * a^(b//2) (donde // es la división entera).
+Conversión en programa recursivo:
+
+Python
+def potencia(a, b):
+    if b == 0:
+        return 1
+    mitad = potencia(a, b // 2)
+    if b % 2 == 0:
+        return mitad * mitad
+    else:
+        return a * mitad * mitad
+Eficiencia:
+
+Es eficiente, pues reduce la cantidad de multiplicaciones a O(log b).
+Problemas a solucionar:
+
+Tener cuidado con los casos donde b es impar.
+Manejar correctamente los casos negativos si se desea.
+
+

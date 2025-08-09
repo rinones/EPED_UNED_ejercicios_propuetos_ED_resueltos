@@ -1,0 +1,136 @@
+Definición:
+f1(n) = 2               si n = 1
+f1(n) = 2 + f1(n-1)     si n > 1
+
+¿Qué calcula?
+La función suma 2 por cada llamada recursiva, comenzando en 2 cuando n = 1.
+Por ejemplo:
+f1(1) = 2
+f1(2) = 2 + f1(1) = 4
+f1(3) = 2 + f1(2) = 6
+f1(4) = 2 + f1(3) = 8
+
+En general, f1(n) = 2n
+
+Problemas:
+1. No está definida para n < 1. Si se llama con n = 0 o menor, la función entra en recursión infinita y puede provocar un error de pila.
+2. No es eficiente para valores grandes de n, porque realiza n-1 llamadas recursivas. Se podría mejorar usando una versión iterativa o una fórmula cerrada.
+
+Resumen:
+- Qué calcula: el doble de n (2n).
+- Problemas: no está definida para n < 1 y es ineficiente para valores grandes de n.
+
+
+
+
+Definición:
+f2(n) = 1             si n = 0
+f2(n) = e * f2(n-1)   si n > 0
+
+¿Qué calcula?
+La función multiplica el valor anterior por e en cada llamada recursiva, comenzando en 1 cuando n = 0.
+Por ejemplo (usando e = 2 como ejemplo, pero puede ser cualquier número real o entero):
+f2(0) = 1
+f2(1) = e * f2(0) = e * 1 = e
+f2(2) = e * f2(1) = e * e = e^2
+f2(3) = e * f2(2) = e * e^2 = e^3
+
+En general, f2(n) = e^n
+
+Problemas:
+1. No está definida para n < 0. Si se llama con n negativo, la función entra en recursión infinita y puede provocar un error de pila.
+2. No es eficiente para valores grandes de n, porque realiza n llamadas recursivas. Se podría mejorar usando una versión iterativa o una fórmula cerrada.
+
+Resumen:
+- Qué calcula: e elevado a la n (e^n).
+- Problemas: no está definida para n < 0 y es ineficiente para valores grandes de n.
+
+
+
+
+Definición:
+f3(n) = 1              si n = 3
+f3(n) = 2 * f3(n-2)    si n ≠ 3
+
+¿Qué calcula?
+La función multiplica por 2 el valor de f3(n-2) en cada llamada recursiva, con el caso base en n = 3.
+
+Ejemplo de cálculo:
+f3(3) = 1
+f3(5) = 2 * f3(3) = 2 * 1 = 2
+f3(7) = 2 * f3(5) = 2 * 2 = 4
+f3(9) = 2 * f3(7) = 2 * 4 = 8
+
+f3(1) = 2 * f3(-1)
+f3(-1) = 2 * f3(-3)
+...
+
+Si n es impar y mayor o igual que 3, f3(n) = 2^((n-3)/2)
+Si n es impar y menor que 3, la recursión nunca llega al caso base y puede provocar recursión infinita.
+
+Si n es par, nunca llega al caso base n=3, por lo que entra en recursión infinita.
+
+Problemas:
+1. No está definida para valores de n pares, ya que nunca llegará al caso base n = 3.
+2. Para valores impares menores que 3, tampoco llega al caso base, lo que puede provocar recursión infinita.
+3. Es ineficiente para valores grandes de n, pues realiza muchas llamadas recursivas.
+
+Resumen:
+- Qué calcula: Para n impar y n ≥ 3, f3(n) = 2^((n-3)/2)
+- Problemas: No funciona para n par ni para n impar menor que 3 (recursión infinita o error de pila). Ineficiente para n grandes.
+
+
+
+
+Definición:
+f4(n) = 0               si n = 0
+f4(n) = 3 * f4(n-1)     si n > 0
+
+¿Qué calcula?
+La función multiplica por 3 el valor anterior en cada llamada recursiva, comenzando en 0 cuando n = 0.
+
+Ejemplo de cálculo:
+f4(0) = 0
+f4(1) = 3 * f4(0) = 3 * 0 = 0
+f4(2) = 3 * f4(1) = 3 * 0 = 0
+f4(3) = 3 * f4(2) = 3 * 0 = 0
+
+Por lo tanto, para cualquier n ≥ 0, f4(n) = 0
+
+Problemas:
+1. Para n < 0, la función no está definida y entraría en recursión infinita si se llama con un valor negativo.
+2. Aunque la definición recursiva sugiere crecimiento exponencial, el caso base (0) anula todo el resultado, haciendo que siempre devuelva 0 para n ≥ 0.
+3. Ineficiencia: aunque siempre da 0, hace n llamadas recursivas innecesarias.
+
+Resumen:
+- Qué calcula: Siempre retorna 0 para n ≥ 0.
+- Problemas: No definida para n < 0; recursión innecesaria para cualquier n > 0.
+
+
+
+
+Definición:
+f5(n) = f5(n-1)        si n > 5
+f5(n) = 3 * f5(n-2)    si n < 5
+
+¿Qué calcula?
+La función está definida de forma recursiva pero NO tiene un caso base explícito (no dice cuánto vale f5(5), ni f5(4), ni ningún valor concreto).
+Analicemos cada caso:
+
+Para n > 5:
+  f5(n) = f5(n-1)
+  Esto significa que para cualquier n > 5, el valor siempre será igual al de f5(5).
+
+Para n < 5:
+  f5(n) = 3 * f5(n-2)
+  Es decir, para obtener el valor de f5(4), necesitas f5(2); para f5(3), necesitas f5(1); y así sucesivamente.
+  En general, para cualquier n impar menor que 5, necesitarás f5(1), f5(-1), etc.
+
+Problemas:
+1. **No hay caso base:** La función nunca termina si no defines explícitamente un valor inicial para algún n específico (por ejemplo, f5(5) o f5(3), etc.). Esto puede llevar a recursión infinita y error de pila.
+2. **Dominio mal definido:** Si intentas calcular f5(n) para n < 5 (especialmente para valores negativos), la función seguirá llamándose a sí misma sin fin.
+3. **No hay valor único:** El valor para n > 5 depende completamente de f5(5), pero ese valor no está definido.
+
+Resumen:
+- Qué calcula: Para n > 5, f5(n) = f5(5). Para n < 5, f5(n) = 3*f5(n-2). Pero sin caso base, la función no puede calcular ningún valor concreto.
+- Problemas: Falta de caso base, posible recursión infinita, dominio mal definido y sin resultados numéricos concretos.

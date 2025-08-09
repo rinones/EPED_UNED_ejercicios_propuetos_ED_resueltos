@@ -1,0 +1,58 @@
+F2(n) {
+    F2aux(x, y, z) {
+        Si x == 0 → z
+        Si x == 1 → y
+        Si x >= 2 → F2aux(x-1, y+z, y)
+    }
+    → F2aux(n, 1, 1)
+}
+
+
+
+F2(n) llama a F2aux(n, 1, 1).
+F2aux(x, y, z) es una función recursiva con tres argumentos.
+Casos base:
+Si x == 0, retorna z.
+Si x == 1, retorna y.
+Caso recursivo:
+Si x >= 2, llama a F2aux(x-1, y+z, y).
+
+
+¿Calcula Fibonacci?
+El Fibonacci estándar se define como:
+
+Fib(0) = 1
+Fib(1) = 1
+Fib(n) = Fib(n-1) + Fib(n-2) para n ≥ 2
+La idea del código es usar una función auxiliar con “acumuladores” para evitar la recursividad doble (esto se llama recursión de cola).
+
+¿Por qué puede fallar?
+Como bien viste, los casos base de F2aux no dependen sólo de x, sino que retornan z o y, que pueden NO ser 1 en el momento de alcanzar x == 0 o x == 1.
+
+
+3. Ejemplo con n = 3
+Llamada inicial:
+F2(3) ⇒ F2aux(3, 1, 1)
+
+F2aux(3, 1, 1):
+x == 3 >= 2 ⇒ llama a F2aux(2, 2, 1)
+F2aux(2, 2, 1):
+x == 2 >= 2 ⇒ llama a F2aux(1, 3, 2)
+F2aux(1, 3, 2):
+x == 1 ⇒ retorna y = 3
+Resultado: F2(3) = 3
+Esto coincide con Fibonacci(3) = 3.
+
+
+¿Dónde puede fallar?
+Ahora, si alguien llama a la auxiliar con otros valores iniciales (no 1,1), los casos base devolverán esos valores, rompiendo la secuencia estándar.
+
+Por ejemplo:
+F2aux(1, 5, 7) retornaría 5,
+F2aux(0, 5, 7) retornaría 7.
+
+Esto significa que los valores de los acumuladores afectan los resultados base.
+
+¿Por qué funciona en este caso?
+Como la llamada inicial es siempre con (n, 1, 1) y la fórmula de acumulación es la correcta (nuevo_y = y+z, nuevo_z = y), sí calcula Fibonacci correctamente para las llamadas F2(n).
+Pero NO es una función general para Fibonacci a menos que siempre se use (n, 1, 1).
