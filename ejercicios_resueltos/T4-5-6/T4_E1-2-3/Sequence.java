@@ -1,6 +1,3 @@
-import DataStructures.IteratorIF;
-import DataStructures.SequenceIF;
-
 public abstract class Sequence<E> extends Collection<E> implements SequenceIF<E> {
 	/* Clase privada que implementa la estructura de nodos de la secuencia */
 	protected class NodeSequence {

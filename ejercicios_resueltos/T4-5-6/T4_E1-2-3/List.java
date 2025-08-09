@@ -1,5 +1,3 @@
-import DataStructures.ListIF;
-
 public class List<E> extends Sequence<E> implements ListIF<E> {
 
 	/* Constructor por defecto: crea una lista vacía */

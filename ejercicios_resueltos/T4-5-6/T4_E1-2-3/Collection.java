@@ -1,5 +1,3 @@
-package DataStructures;
-
 public abstract class Collection<E> implements CollectionIF<E> {
 	protected int size;
 
