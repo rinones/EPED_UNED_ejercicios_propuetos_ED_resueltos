@@ -8,6 +8,7 @@ Este repositorio recopila ejercicios resueltos de la asignatura **Estrategias de
 - Ejercicios propuestos por el equipo docente  
 - Soluciones principalmente en **Java**  
 - Explicaciones complementarias en archivos `.txt`, imágenes (`.jpg`) y vídeos (`.mp4`)
+- El vídeo utilizado pertenece al canal de YouTube [martinotilico](https://www.youtube.com/@martinotilico) y está disponible en [este enlace](https://www.youtube.com/watch?v=FO6pmLTgf9c&t=94s)
 
 **Estructura:**  
 - Organización por temas  
