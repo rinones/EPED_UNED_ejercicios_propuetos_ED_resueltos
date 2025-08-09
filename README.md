@@ -1,4 +1,4 @@
-# EPED_UNED_ejercicios_propuestos_ED_resueltos
+# EPED_UNED_ejercicios_propuestos_resueltos
 
 ---
 **Descripción:**  
